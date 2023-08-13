@@ -36,11 +36,13 @@ library forming the QML Plugin. The plugin then can be used in widgets.
 It is assumed that a Rust, QT and KDE develop requirements are met.
 The following command build and install the project.
 
+```
 mkdir build
 cd build
 cmake .. -DCMAKE_INSTALL_PREFIX=/usr
 cmake --build .
 sudo cmake --install .
+```
 
 ## Run contained environment
 
