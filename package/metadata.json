@@ -1,0 +1,25 @@
+{
+    "KPlugin": {
+        "Authors": [
+            {
+                "Email": "simon.brummer@posteo.de",
+                "Name": "Simon Brummer"
+            }
+        ],
+        "Category": "Examples",
+        "Description": "Small example to showcase a Plasmoid with a Rust backend",
+        "EnabledByDefault": true,
+        "Icon": "applications-system",
+        "Id": "org.kde.plasma.rust.example",
+        "License": "MPL 2.0",
+        "Name": "Rust backend example",
+        "ServiceTypes": [
+            "Plasma/Applet"
+        ],
+        "Version": "1.0",
+        "Website": "TODO"
+    },
+    "KPackageStructure": "Plasma/Applet",
+    "X-Plasma-API": "declarativeappletscript",
+    "X-Plasma-MainScript": "ui/main.qml"
+}
