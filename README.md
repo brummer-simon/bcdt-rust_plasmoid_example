@@ -2,9 +2,8 @@
 
 ## Motivation
 
-I like to develop in rust and as KDE user, I though at some point "I really would like implement widgets with Rust as backend".
-Then I searched for examples in that regard and did not find anything.
-A few days after that I thought "It can't be that hard to do that", so ended up creating a PoC/this repo.
+I like to develop in rust and as KDE user, I though at some point "I really would like to implement widgets with Rust as backend".
+Then I searched for examples and howtos and did not find anything. Then I thought "It can't be that hard to do that", so ended up creating a PoC/this repo.
 
 To get this to work, I basically merged code from three separate examples/project that solve parts of my problem.
 
@@ -20,21 +19,21 @@ It is a click counter widget, manipulating a counter maintained in the rust comp
 
 ## How does it work?
 
-The whole example is build around a QML Extension. The Rust backend uses cxx-qt to
+The whole example is build as a QML Extension. The Rust backend uses cxx-qt to
 generate QT compatible wrappers for rust types (plugin/rust/build.rs). These wrappers are registered
-as QML Types in a tiny C++ based piece of code forming a QML plugin.
-These custom QML types can be used in the KDE Framework.
+as QML Types by a tiny piece of C++ code forming a QML plugin.
+These custom QML types can be used in plasma widgets.
 
-The entire example is build with the KDE CMake build scripts.
+The entire example is built via KDE CMake build scripts.
 The Rust code is compiled into a static library, that is linked into the dynamic
-library forming the QML Plugin. The plugin then can be used in widgets.
+library forming the QML Plugin.
 
 # Build instructions
 
 ## Build instructions
 
-It is assumed that a Rust, QT and KDE develop requirements are met.
-The following command build and install the project.
+It is assumed that Rust, QT and KDE develop requirements are met.
+The following commands build and install the project.
 
 ```
 mkdir build
