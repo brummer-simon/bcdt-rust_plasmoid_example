@@ -20,14 +20,10 @@ It is a click counter widget, manipulating a counter maintained in the rust comp
 
 ## How does it work?
 
-The whole example is build as a QML Extension. The Rust backend uses cxx-qt to
-generate QT compatible wrappers for rust types (plugin/rust/build.rs). These wrappers are registered
-as QML Types by a tiny piece of C++ code forming a QML plugin.
+The Rust backend uses qmetaobject to register Rust types as QML types as part of a QML extension plugin.
 These custom QML types can be used in plasma widgets.
 
-The entire example is built via KDE CMake build scripts.
-The Rust code is compiled into a static library, that is linked into the dynamic
-library forming the QML Plugin.
+The entire example is built via KDE CMake build scripts to install things in the correct locations.
 
 # Build instructions
 
