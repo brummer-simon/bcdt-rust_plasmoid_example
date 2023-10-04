@@ -12,6 +12,7 @@ I am standing here on the shoulders of giants so many thanks to:
 
 - [KDE](https://github.com/KDE/plasma-framework)
 - [CXX-QT](https://github.com/KDAB/cxx-qt)
+- [qmetaobject](https://github.com/woboq/qmetaobject-rs)
 - [Jiriki86](https://github.com/Jiriki86/Connect4)
 
 ## What does it do?

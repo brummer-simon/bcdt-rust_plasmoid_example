@@ -1,5 +1,5 @@
 [package]
-name = "rust-backend"
+name = "rust_backend"
 version = "0.1.0"
 authors = [
     "Simon Brummer <simon.brummer@posteo.de>"
@@ -8,12 +8,8 @@ edition = "2021"
 license = "MPL-2.0"
 
 [lib]
-crate-type = ["staticlib"]
+name = "rust_backend"
+crate-type = ["cdylib"]
 
 [dependencies]
-cxx = "1.0.95"
-cxx-qt = "0.5"
-cxx-qt-lib = "0.5"
-
-[build-dependencies]
-cxx-qt-build = "0.5"
+qmetaobject = { version = "0.2.9"}

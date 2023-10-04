@@ -3,5 +3,5 @@ build
 .cache
 
 # Rust specific
-plugin/rust/target
-plugin/rust/Cargo.lock
+plugin/target
+plugin/Cargo.lock
