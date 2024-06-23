@@ -42,4 +42,14 @@ sudo cmake --install .
 
 ## Run contained environment
 
-plasmoidviewer -a org.kde.plasma.rust.example
+plasmoidviewer -a org.kde.plasma.rust_backend.example
+
+## TODO:
+
+- Improve tooling (makefile maybe)
+    - Install
+    - Uninstall
+    - Build
+    - Test
+    - Provide central source for paths and names
+

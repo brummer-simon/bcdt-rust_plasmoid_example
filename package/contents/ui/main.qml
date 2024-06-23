@@ -6,26 +6,32 @@
 // Description: Widget used to read/write data from the Qml Extension
 //              that is implemented in Rust.
 
-import QtQuick 2.1
-import QtQuick.Layouts 1.1
-import org.kde.plasma.core 2.0 as PlasmaCore
+import QtQuick 6.0
+import QtQuick.Layouts 6.0
 import org.kde.plasma.plasmoid 2.0
-import org.kde.plasma.components 2.0 as PlasmaComponents
+import org.kde.kirigami as Kirigami
+import org.kde.plasma.core 2.0 as PlasmaCore
+import org.kde.plasma.components 3.0 as PlasmaComponents
 
-import org.kde.plasma.private.rust.backend 1.0
+//import org.kde.plasma.private.rust.backend 1.0
 
-Item {
+PlasmoidItem {
+    id: root
+
+    /*
     Component.onCompleted: {
         Backend.number = plasmoid.configuration.counterStartValue
     }
+    */
 
-    Plasmoid.fullRepresentation: ColumnLayout {
+    fullRepresentation: ColumnLayout {
         anchors.fill: parent
 
         PlasmaComponents.Label {
             Layout.alignment: Qt.AlignCenter
 
-            text: i18n("Click Counter: %1", Backend.number)
+            //text: i18n("Click Counter: %1", Backend.number)
+            text: i18n("Test")
         }
 
         Row {
@@ -36,7 +42,7 @@ Item {
 
                 text: i18n("Click Me")
 
-                onClicked: Backend.incrementNumber()
+                //onClicked: Backend.incrementNumber()
             }
 
             PlasmaComponents.Button {
@@ -44,8 +50,9 @@ Item {
 
                 text: i18n("Reset")
 
-                onClicked: Backend.number = plasmoid.configuration.counterStartValue
+                //onClicked: Backend.number = plasmoid.configuration.counterStartValue
             }
         }
     }
 }
+

@@ -5,7 +5,7 @@
 // Author: Simon Brummer (simon.brummer@posteo.de)
 // Description: The Configuration dialog.
 
-import QtQuick 2.0
+import QtQuick 6.0
 
 import org.kde.plasma.configuration 2.0 as PlasmaConfig
 

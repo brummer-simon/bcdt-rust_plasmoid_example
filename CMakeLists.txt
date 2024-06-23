@@ -9,32 +9,37 @@ cmake_minimum_required(VERSION 3.24)
 
 project(plasma_rust_backend)
 
-set(QT_MIN_VERSION "5.15.2")
-set(KF5_MIN_VERSION "5.93.0")
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+set(KF6_MIN_VERSION "6.1.0")
+set(QT6_MIN_VERSION "6.6.0")
 
-find_package(ECM ${KF5_MIN_VERSION} REQUIRED NO_MODULE)
+find_package(ECM ${KF6_MIN_VERSION} REQUIRED NO_MODULE)
 set(CMAKE_MODULE_PATH ${ECM_MODULE_PATH})
 
 include(KDEInstallDirs)
 include(KDECMakeSettings)
-include(KDECompilerSettings NO_POLICY_SCOPE)
 include(FeatureSummary)
+include(ECMFeatureSummary)
 
-find_package(KF5 REQUIRED COMPONENTS
-    Plasma
+find_package(Plasma REQUIRED)
+
+find_package(KF6 ${KF6_MIN_VERSION} REQUIRED COMPONENTS
+    Config
+    KCMUtils
+    I18n
 )
 
-find_package(Qt5 CONFIG REQUIRED COMPONENTS
+find_package(Qt6 ${QT6_MIN_VERSION} CONFIG REQUIRED COMPONENTS
     Qml
     Gui
+    Quick
     Core
 )
 
 # Install plasmoid
-plasma_install_package(package org.kde.plasma.rust.example)
+plasma_install_package(package org.kde.plasma.rust_backend.example)
 
 # Install qml plugin
-add_subdirectory(plugin)
+#add_subdirectory(plugin)
 
 feature_summary(WHAT ALL FATAL_ON_MISSING_REQUIRED_PACKAGES)
+ecm_feature_summary(WHAT ALL FATAL_ON_MISSING_REQUIRED_PACKAGES)
