@@ -16,7 +16,7 @@ struct QmlPlugin {
 
 impl QQmlExtensionPlugin for QmlPlugin {
     fn register_types(&mut self, uri: &CStr) {
-        let expected_uri = CString::new("org.kde.plasma.private.rust.backend").unwrap();
+        let expected_uri = CString::new("org.kde.plasma.private.rust_backend_example").unwrap();
         if expected_uri.as_c_str() != uri {
             panic!(
                 "Error: Module URI is unexpected. Expected URI: {}, actual URI: {}",
