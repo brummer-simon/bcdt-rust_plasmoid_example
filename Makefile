@@ -1,15 +1,19 @@
 # Currently selected kernel module to build
 # TODO: Align on path
-# TODO: Fix help and document makefile
+# TODO: Cleanup build
 
 help:
 	echo "This makefile supports the following targets:"
+	echo "    - build     - Build module"
+	echo "    - clean     - Delete build artifacts"
+	echo "    - install   - Install modules and all related files"
 	echo "    - uninstall - Uninstall modules and all related files"
 	echo "    - viewer    - Run plasmoid in dedicated viewer"
 	echo
 
-viewer:
-	plasmoidviewer -a org.kde.plasma.rust_backend_example
+build:
+	mkdir -p build; pushd build; cmake -DCMAKE_INSTALL_PREFIX=/usr ..; popd
+	cmake --build build
 
 clean:
 	rm -rf build
@@ -22,12 +26,16 @@ uninstall:
 	sudo rm -rf /usr/lib/qt6/qml/org/kde/plasma/private/rust_backend_example
 	sudo rm -f  /usr/share/metainfo/org.kde.plasma.rust_backend_example.appdata.xml
 
+viewer:
+	plasmoidviewer -a org.kde.plasma.rust_backend_example
 
 .PHONY:\
 	help\
-	viewer\
+	build\
+	clean\
 	install\
-	uninstall
+	uninstall\
+	viewer
 
 .SILENT:\
 	help

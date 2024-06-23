@@ -11,12 +11,12 @@ use std::ffi::{CStr, CString};
 #[derive(Default, QObject)]
 struct QmlPlugin {
     base: qt_base_class!(trait QQmlExtensionPlugin),
-    plugin: qt_plugin!("org.qt-project.Qt.QQmlExtensionInterface/1.0"),
+    plugin: qt_plugin!("org.qt-project.Qt.QQmlExtensionInterface"),
 }
 
 impl QQmlExtensionPlugin for QmlPlugin {
     fn register_types(&mut self, uri: &CStr) {
-        let expected_uri = CString::new("org.kde.plasma.private.rust_backend_example").unwrap();
+        let expected_uri = CString::new("org.kde.plasma.private.rust_backend_example_plugin").unwrap();
         if expected_uri.as_c_str() != uri {
             panic!(
                 "Error: Module URI is unexpected. Expected URI: {}, actual URI: {}",
