@@ -1,5 +1,7 @@
 #pragma once
 
+#include "cxxbridge/rust_backend_example_plugin_impl/src/lib.rs.h"
+
 #include <QObject>
 #include <qqmlintegration.h>
 #include <qtmetamacros.h>
@@ -22,6 +24,5 @@ Q_SIGNALS:
   void numberChanged(qint32 const &number);
 
 private:
-  // TODO: Insert Rust object here
-  qint32 _number;
+    rust::Box<rust_ffi::Backend> _backend;
 };

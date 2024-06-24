@@ -5,6 +5,8 @@
 # Author: Simon Brummer (simon.brummer@posteo.de)
 # Description: CMake file building the entire project.
 
+# TODO: Compile release config
+
 cmake_minimum_required(VERSION 3.24)
 
 project(plasma_rust_backend)
@@ -21,14 +23,12 @@ include(KDECompilerSettings NO_POLICY_SCOPE)
 include(FeatureSummary)
 include(ECMFeatureSummary)
 
-
+find_package(Corrosion REQUIRED)
 find_package(Plasma REQUIRED)
-
 find_package(KF6 ${KF6_MIN_VERSION} REQUIRED COMPONENTS
     KCMUtils
     Config
 )
-
 find_package(Qt6 ${QT6_MIN_VERSION} CONFIG REQUIRED COMPONENTS
     Qml
     Gui
@@ -37,13 +37,22 @@ find_package(Qt6 ${QT6_MIN_VERSION} CONFIG REQUIRED COMPONENTS
 )
 
 # Project properties
-# TODO: centralize install paths and names?
+# TODO: centralize install paths and names/roll them out into the project
 set(PLASMOID_NAME       "bcdt.rust_backend_example")
 
+# Plugin related attributes
 set(PLUGIN_NAME         "rust_backend_example_plugin")
 set(PLUGIN_ARTIFACT_QML "plugin/qmldir")
 set(PLUGIN_ARTIFACT     "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/lib${PLUGIN_NAME}.so")
 set(PLUGIN_INSTALLDIR   "${KDE_INSTALL_QMLDIR}/bcdt/rust_backend_example")
+set(CRATE_NAME          "${PLUGIN_NAME}_impl")
+
+# Build Plugin (Rust core)
+corrosion_import_crate(
+    MANIFEST_PATH plugin/rust/Cargo.toml
+    CRATE_TYPES staticlib
+    CRATES ${CRATE_NAME}
+)
 
 # Build Plugin (C++ entry point)
 set(CMAKE_CXX_STANDARD 20)
@@ -61,41 +70,17 @@ target_include_directories(
     ${PLUGIN_NAME}
     PRIVATE
         plugin/cpp/include
+        plugin/rust/target
 )
 
 target_link_libraries(
     ${PLUGIN_NAME}
+    ${CRATE_NAME}
     Qt6::Core
     Qt6::Qml
 )
 
-
-
-# TODO:
-# Install C++ Plugin 
-#
-#find_package(Corrosion REQUIRED)
-#
-## Build rust based qml plugin
-#set(CRATE rust_backend_example_plugin)
-#set(CRATE_ARTIFACT ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/lib${CRATE}.so)
-#set(PLUGIN_INSTALL_DESTINATION ${KDE_INSTALL_QMLDIR}/org/kde/plasma/private/rust_backend_example)
-#
-#get_target_property(QMAKE Qt6::qmake IMPORTED_LOCATION)
-#
-#corrosion_import_crate(
-#MANIFEST_PATH plugin/Cargo.toml
-#CRATE_TYPES cdylib
-#CRATES ${CRATE}
-#)
-#
-#corrosion_set_env_vars(${CRATE}
-#"QMAKE=${QMAKE}"
-#)
-
 # Installation paths
-# TODO: Create qmldir on the fly from cmake variables?
-
 plasma_install_package(package ${PLASMOID_NAME})
 install(FILES ${PLUGIN_ARTIFACT} DESTINATION ${PLUGIN_INSTALLDIR})
 install(FILES ${PLUGIN_ARTIFACT_QML} DESTINATION ${PLUGIN_INSTALLDIR})
