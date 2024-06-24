@@ -1,2 +1,2 @@
-module org.kde.plasma.private.rust_backend_example
+module bcdt.rust_backend_example
 plugin rust_backend_example_plugin
