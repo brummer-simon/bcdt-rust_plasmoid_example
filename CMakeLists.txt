@@ -8,6 +8,7 @@
 # TODO: Compile with release config
 # TODO: Rename Repo to prefix bcdt-
 # TODO: Move binding generation into CMake
+# TODO: Test for missing cargo install cxxbridge-cmd
 
 cmake_minimum_required(VERSION 3.24)
 
@@ -43,17 +44,41 @@ find_package(Qt6 ${QT6_MIN_VERSION} CONFIG REQUIRED COMPONENTS
 set(PLASMOID_NAME       "bcdt.rust_backend_example")
 
 # Plugin related attributes
-set(PLUGIN_NAME         "plugin")
-set(PLUGIN_ARTIFACT_QML "plugin/qmldir")
-set(PLUGIN_ARTIFACT     "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/lib${PLUGIN_NAME}.so")
-set(PLUGIN_INSTALL_DIR  "${KDE_INSTALL_QMLDIR}/bcdt/rust_backend_example")
-set(CRATE_NAME          "plugin_impl")
+set(PLUGIN_NAME              "plugin")
+set(PLUGIN_ARTIFACT_QML      "plugin/qmldir")
+set(PLUGIN_ARTIFACT          "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/lib${PLUGIN_NAME}.so")
+set(PLUGIN_INSTALL_DIR       "${KDE_INSTALL_QMLDIR}/bcdt/rust_backend_example")
+
+set(BINDINGS_GEN_NAME        "generate_cxxbridge")
+set(BINDINGS_GEN_DIR         "${CMAKE_BINARY_DIR}/${BINDINGS_GEN_NAME}")
+set(BINDINGS_GEN_INCLUDE_DIR "${BINDINGS_GEN_DIR}/include/cxxbridge")
+set(BINDINGS_GEN_SOURCE_DIR  "${BINDINGS_GEN_DIR}/src")
+
+set(CRATE_NAME               "plugin_impl")
 
 # Build Plugin (Rust core)
 corrosion_import_crate(
     MANIFEST_PATH plugin/rust/Cargo.toml
     CRATES ${CRATE_NAME}
 )
+
+# Build Rust <-> CPP bindings
+add_custom_target(
+    ${BINDINGS_GEN_NAME}
+    COMMAND rm -rf   ${BINDINGS_GEN_DIR}
+    COMMAND mkdir -p ${BINDINGS_GEN_INCLUDE_DIR}
+    COMMAND mkdir -p ${BINDINGS_GEN_SOURCE_DIR}
+    COMMAND cxxbridge plugin/rust/src/backend.rs --header --output "${BINDINGS_GEN_INCLUDE_DIR}/backend.rs.hpp"
+    COMMAND cxxbridge plugin/rust/src/backend.rs --output "${BINDINGS_GEN_SOURCE_DIR}/backend.rs.cpp"
+)
+
+# TODO: Change later to binding generation
+add_dependencies(
+    ${CRATE_NAME}
+    ${BINDINGS_GEN_NAME}
+)
+
+# TODO: Compile Bindings into static lib
 
 # Build Plugin (C++ entry point)
 set(CMAKE_CXX_STANDARD 20)
