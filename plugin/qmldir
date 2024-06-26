@@ -1,2 +1,2 @@
 module bcdt.rust_backend_example
-plugin rust_backend_example_plugin
+plugin plugin

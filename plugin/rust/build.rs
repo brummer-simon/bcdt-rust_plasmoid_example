@@ -1,5 +1,9 @@
-fn main() {
-    cxx_build::bridge("src/lib.rs").compile("rust_backend_example_plugin_impl");
+// TODO: Rename bindings crate
 
-    println!("cargo:rerun-if-changed=src/lib.rs");
+fn main() {
+    let binding_files = vec!["src/backend.rs"];
+
+    cxx_build::CFG.doxygen = true;
+    cxx_build::CFG.include_prefix = "rust";
+    cxx_build::bridges(binding_files).compile("plugin_impl");
 }

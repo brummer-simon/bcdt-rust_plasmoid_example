@@ -1,7 +1,6 @@
 #pragma once
 
-#include "cxxbridge/rust_backend_example_plugin_impl/src/lib.rs.h"
-
+#include "cxxbridge/rust/src/backend.rs.h"
 #include <QObject>
 #include <qqmlintegration.h>
 #include <qtmetamacros.h>
@@ -24,5 +23,5 @@ Q_SIGNALS:
   void numberChanged(qint32 const &number);
 
 private:
-    rust::Box<rust_ffi::Backend> _backend;
+    rust::Box<rust::Backend> _backend;
 };

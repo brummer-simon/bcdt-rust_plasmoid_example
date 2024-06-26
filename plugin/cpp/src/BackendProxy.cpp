@@ -1,7 +1,7 @@
 #include "BackendProxy.hpp"
 
 BackendProxy::BackendProxy(QObject *parent)
-    : QObject{parent}, _backend{rust_ffi::make()} {}
+    : QObject{parent}, _backend{rust::make_backend()} {}
 
 qint32 BackendProxy::number() const { return _backend->number(); }
 

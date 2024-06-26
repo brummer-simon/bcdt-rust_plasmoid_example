@@ -5,7 +5,9 @@
 # Author: Simon Brummer (simon.brummer@posteo.de)
 # Description: CMake file building the entire project.
 
-# TODO: Compile release config
+# TODO: Compile with release config
+# TODO: Rename Repo to prefix bcdt-
+# TODO: Move binding generation into CMake
 
 cmake_minimum_required(VERSION 3.24)
 
@@ -41,16 +43,15 @@ find_package(Qt6 ${QT6_MIN_VERSION} CONFIG REQUIRED COMPONENTS
 set(PLASMOID_NAME       "bcdt.rust_backend_example")
 
 # Plugin related attributes
-set(PLUGIN_NAME         "rust_backend_example_plugin")
+set(PLUGIN_NAME         "plugin")
 set(PLUGIN_ARTIFACT_QML "plugin/qmldir")
 set(PLUGIN_ARTIFACT     "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/lib${PLUGIN_NAME}.so")
-set(PLUGIN_INSTALLDIR   "${KDE_INSTALL_QMLDIR}/bcdt/rust_backend_example")
-set(CRATE_NAME          "${PLUGIN_NAME}_impl")
+set(PLUGIN_INSTALL_DIR  "${KDE_INSTALL_QMLDIR}/bcdt/rust_backend_example")
+set(CRATE_NAME          "plugin_impl")
 
 # Build Plugin (Rust core)
 corrosion_import_crate(
     MANIFEST_PATH plugin/rust/Cargo.toml
-    CRATE_TYPES staticlib
     CRATES ${CRATE_NAME}
 )
 
@@ -82,9 +83,8 @@ target_link_libraries(
 
 # Installation paths
 plasma_install_package(package ${PLASMOID_NAME})
-install(FILES ${PLUGIN_ARTIFACT} DESTINATION ${PLUGIN_INSTALLDIR})
-install(FILES ${PLUGIN_ARTIFACT_QML} DESTINATION ${PLUGIN_INSTALLDIR})
+install(FILES ${PLUGIN_ARTIFACT_QML} DESTINATION ${PLUGIN_INSTALL_DIR})
+install(FILES ${PLUGIN_ARTIFACT}     DESTINATION ${PLUGIN_INSTALL_DIR})
 
 feature_summary(WHAT ALL FATAL_ON_MISSING_REQUIRED_PACKAGES)
 ecm_feature_summary(WHAT ALL FATAL_ON_MISSING_REQUIRED_PACKAGES)
-

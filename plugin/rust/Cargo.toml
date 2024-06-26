@@ -1,5 +1,5 @@
 [package]
-name = "rust_backend_example_plugin_impl"
+name = "plugin_impl"
 version = "0.1.0"
 authors = [
     "Simon Brummer <simon.brummer@posteo.de>"
@@ -8,7 +8,7 @@ edition = "2021"
 license = "MPL-2.0"
 
 [lib]
-name = "rust_backend_example_plugin_impl"
+name = "plugin_impl"
 crate-type = ["staticlib"]
 
 [dependencies]

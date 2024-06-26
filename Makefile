@@ -1,10 +1,4 @@
-# Currently selected kernel module to build
-# TODO: Align on path
-# TODO: Cleanup build
 # TODO: Cleanup readme.md
-# TODO: 1. Replace Rust with C++ wrapper and get it to build
-# TODO: 2. Implement Rust struct and link it against plugin
-# TODO: 3. Generate binding
 
 help:
 	echo "This makefile supports the following targets:"
@@ -28,10 +22,9 @@ install:
 uninstall:
 	sudo rm -rf /usr/share/plasma/plasmoids/bcdt.rust_backend_example
 	sudo rm -rf /usr/lib/qt6/qml/bcdt/rust_backend_example
-	sudo rm -f  /usr/share/metainfo/bcdt.rust_backend_example.appdata.xml
 
 viewer:
-	plasmoidviewer -a org.kde.plasma.rust_backend_example
+	plasmoidviewer -a bcdt.rust_backend_example
 
 .PHONY:\
 	help\
