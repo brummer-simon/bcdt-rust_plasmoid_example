@@ -1,7 +1,9 @@
 # CMake specific
-build
+build_release
+build_debug
 .cache
+compile_commands.json
 
 # Rust specific
-plugin/target
-plugin/Cargo.lock
+plugin/rust/target
+plugin/rust/Cargo.lock

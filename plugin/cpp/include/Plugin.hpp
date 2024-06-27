@@ -3,6 +3,16 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 //
 // Author: Simon Brummer (simon.brummer@posteo.de)
-// Description: Rust backend library entry point
 
-pub mod backend;
+#pragma once
+
+#include <QQmlExtensionPlugin>
+
+class Plugin : public QQmlExtensionPlugin {
+private:
+  Q_OBJECT
+  Q_PLUGIN_METADATA(IID "org.qt-project.Qt.QQmlExtensionInterface/1.0")
+
+public:
+  void registerTypes(char const *uri) override;
+};

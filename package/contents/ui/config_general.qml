@@ -5,12 +5,12 @@
 // Author: Simon Brummer (simon.brummer@posteo.de)
 // Description: General section of the Configuration dialog.
 
-import QtQuick 2.0
-import QtQuick.Controls 2.5 as Controls
+import QtQuick 6.0
+import QtQuick.Controls 6.0 as Controls
+import org.kde.kirigami as Kirigami
+import org.kde.kcmutils as KCM
 
-import org.kde.kirigami 2.4 as Kirigami
-
-Kirigami.FormLayout {
+KCM.SimpleKCM {
     id: page
     anchors.fill: parent
 
