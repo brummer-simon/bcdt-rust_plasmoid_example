@@ -2,7 +2,9 @@
 #include "BackendProxy.hpp"
 #include <QQmlEngine>
 
-// TODO: Supply module name externaly (maybe define)
+#ifndef PLUGIN_URI
+#error Missing external define. Pass PLUGIN_URI to plugin build step
+#endif
 
 namespace {
 QObject *backendProxySingletonBuilder(QQmlEngine *, QJSEngine *) {
@@ -11,7 +13,7 @@ QObject *backendProxySingletonBuilder(QQmlEngine *, QJSEngine *) {
 } // namespace
 
 void Plugin::registerTypes(char const *uri) {
-  Q_ASSERT(QLatin1String(uri) == QLatin1String("bcdt.rust_backend_example"));
+  Q_ASSERT(QLatin1String(uri) == QLatin1String(PLUGIN_URI));
 
   qmlRegisterSingletonType<BackendProxy>(uri, 1, 0, "Backend",
                                          backendProxySingletonBuilder);

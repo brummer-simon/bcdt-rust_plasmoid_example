@@ -3,12 +3,6 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 #
 # Author: Simon Brummer (simon.brummer@posteo.de)
-# Description: CMake file building the entire project.
-
-# TODO: Compile with release config
-# TODO: Rename Repo to prefix bcdt-
-# TODO: Move binding generation into CMake
-# TODO: Test for missing cargo install cxxbridge-cmd
 
 cmake_minimum_required(VERSION 3.24)
 
@@ -40,63 +34,79 @@ find_package(Qt6 ${QT6_MIN_VERSION} CONFIG REQUIRED COMPONENTS
 )
 
 # Project properties
-# TODO: centralize install paths and names/roll them out into the project
-set(PLASMOID_NAME       "bcdt.rust_backend_example")
+set(PLASMOID_NAME        "bcdt.rust_backend_example")
 
-# Plugin related attributes
-set(PLUGIN_NAME              "plugin")
-set(PLUGIN_ARTIFACT_QML      "plugin/qmldir")
-set(PLUGIN_ARTIFACT          "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/lib${PLUGIN_NAME}.so")
-set(PLUGIN_INSTALL_DIR       "${KDE_INSTALL_QMLDIR}/bcdt/rust_backend_example")
+set(PLUGIN_NAME          "plugin")
+set(PLUGIN_URI           "${PLASMOID_NAME}")
+set(PLUGIN_DIR           "${CMAKE_SOURCE_DIR}/${PLUGIN_NAME}/cpp")
+set(PLUGIN_SOURCE_DIR    "${PLUGIN_DIR}/src")
+set(PLUGIN_ARTIFACT_QML  "${PLUGIN_DIR}/qmldir")
+set(PLUGIN_ARTIFACT      "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/lib${PLUGIN_NAME}.so")
+set(PLUGIN_INSTALL_DIR   "${KDE_INSTALL_QMLDIR}/bcdt/rust_backend_example")
 
-set(BINDINGS_GEN_NAME        "generate_cxxbridge")
-set(BINDINGS_GEN_DIR         "${CMAKE_BINARY_DIR}/${BINDINGS_GEN_NAME}")
-set(BINDINGS_GEN_INCLUDE_DIR "${BINDINGS_GEN_DIR}/include/cxxbridge")
-set(BINDINGS_GEN_SOURCE_DIR  "${BINDINGS_GEN_DIR}/src")
+set(BINDINGS_NAME        "cxxbridge_autogen")
+set(BINDINGS_DIR         "${CMAKE_BINARY_DIR}/${BINDINGS_NAME}")
+set(BINDINGS_INCLUDE_DIR "${BINDINGS_DIR}/include/cxxbridge")
+set(BINDINGS_SOURCE_DIR  "${BINDINGS_DIR}/src")
 
-set(CRATE_NAME               "plugin_impl")
+set(CRATE_NAME           "plugin_impl")
+set(CRATE_SOURCE_DIR     "${CMAKE_SOURCE_DIR}/plugin/rust/src")
 
-# Build Plugin (Rust core)
-corrosion_import_crate(
-    MANIFEST_PATH plugin/rust/Cargo.toml
-    CRATES ${CRATE_NAME}
-)
+if(${CMAKE_BUILD_TYPE} STREQUAL "Debug")
+    set(CRATE_PROFILE    "dev")
+elseif(${CMAKE_BUILD_TYPE} STREQUAL "Release")
+    set(CRATE_PROFILE    "release")
+else()
+    message(FATAL_ERROR "Unsupported build type ${CMAKE_BUILD_TYPE}" )
+endif()
 
-# Build Rust <-> CPP bindings
-add_custom_target(
-    ${BINDINGS_GEN_NAME}
-    COMMAND rm -rf   ${BINDINGS_GEN_DIR}
-    COMMAND mkdir -p ${BINDINGS_GEN_INCLUDE_DIR}
-    COMMAND mkdir -p ${BINDINGS_GEN_SOURCE_DIR}
-    COMMAND cxxbridge plugin/rust/src/backend.rs --header --output "${BINDINGS_GEN_INCLUDE_DIR}/backend.rs.hpp"
-    COMMAND cxxbridge plugin/rust/src/backend.rs --output "${BINDINGS_GEN_SOURCE_DIR}/backend.rs.cpp"
-)
-
-# TODO: Change later to binding generation
-add_dependencies(
-    ${CRATE_NAME}
-    ${BINDINGS_GEN_NAME}
-)
-
-# TODO: Compile Bindings into static lib
-
-# Build Plugin (C++ entry point)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
+# Rust <-> CPP binding targets
+find_program(
+    CXXBRIDGE cxxbridge REQUIRED
+)
+
+add_custom_target(
+    ${BINDINGS_NAME}
+    COMMAND rm -rf   ${BINDINGS_DIR}
+    COMMAND mkdir -p ${BINDINGS_INCLUDE_DIR}
+    COMMAND mkdir -p ${BINDINGS_SOURCE_DIR}
+    COMMAND "${CXXBRIDGE}" "${CRATE_SOURCE_DIR}/backend.rs" --header --output "${BINDINGS_INCLUDE_DIR}/backend.rs.hpp"
+    COMMAND "${CXXBRIDGE}" "${CRATE_SOURCE_DIR}/backend.rs"          --output "${BINDINGS_SOURCE_DIR}/backend.rs.cpp"
+    BYPRODUCTS "${BINDINGS_SOURCE_DIR}/backend.rs.cpp"
+)
+
+# Plugin (Rust part) target
+
+corrosion_import_crate(
+    MANIFEST_PATH plugin/rust/Cargo.toml
+    CRATES ${CRATE_NAME}
+    PROFILE ${CRATE_PROFILE}
+)
+
+# Plugin (C++ part) target
 add_library(
     ${PLUGIN_NAME}
     SHARED
-        plugin/cpp/src/BackendProxy.cpp
-        plugin/cpp/src/Plugin.cpp
+        ${PLUGIN_SOURCE_DIR}/BackendProxy.cpp
+        ${PLUGIN_SOURCE_DIR}/Plugin.cpp
+        ${BINDINGS_SOURCE_DIR}/backend.rs.cpp
+)
+
+target_compile_definitions(
+    ${PLUGIN_NAME}
+    PRIVATE
+        PLUGIN_URI="${PLUGIN_URI}"
 )
 
 target_include_directories(
     ${PLUGIN_NAME}
     PRIVATE
-        plugin/cpp/include
-        plugin/rust/target
+        "${BINDINGS_DIR}/include"
+        "${PLUGIN_DIR}/include"
 )
 
 target_link_libraries(
@@ -106,7 +116,7 @@ target_link_libraries(
     Qt6::Qml
 )
 
-# Installation paths
+# Deployment
 plasma_install_package(package ${PLASMOID_NAME})
 install(FILES ${PLUGIN_ARTIFACT_QML} DESTINATION ${PLUGIN_INSTALL_DIR})
 install(FILES ${PLUGIN_ARTIFACT}     DESTINATION ${PLUGIN_INSTALL_DIR})

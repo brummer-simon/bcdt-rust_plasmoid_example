@@ -3,6 +3,5 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 //
 // Author: Simon Brummer (simon.brummer@posteo.de)
-// Description: Rust backend library entry point
 
 pub mod backend;
